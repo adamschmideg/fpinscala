@@ -208,11 +208,11 @@ def treeMap[A,B](tree: Tree[A])(f: (A) => B): Tree[B] = {
 }
 
 // Exercise 3.29
-def treeFold[A,B](tree: Tree[A])(lf: (A) => B, bf: (Tree[A],Tree[A]) => B): B = {
+def treeFold[A,B](tree: Tree[A], acc: B)(lf: (B, A) => B, bf: (B,B) => B): B = {
     tree match {
-        case Leaf(v) => lf(v)
-        case Branch(l,r) => bf(l,r)
+        case Leaf(v) => lf(acc, v)
+        case Branch(l,r) => bf(treeFold(l, acc)(lf, bf), treeFold(r, acc)(lf, bf))
     }
 }
 
-//def size2[A](tree: Tree[A]): Int = treeFold(tree)((_) => 1, )
+def size2[A](tree: Tree[A]): Int = treeFold(tree, 0)((acc,v) => acc + 1, (l, r) => l + r)
