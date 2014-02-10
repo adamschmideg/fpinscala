@@ -195,7 +195,7 @@ def maximum(tree: Tree[Int]): Int = {
 def depth[A](tree: Tree[A]): Int = {
     tree match {
         case Leaf(_) => 1
-        case Branch(l, r) => depth(l) max depth(r)
+        case Branch(l, r) => depth(l) max depth(r) + 1
     }
 }
 
@@ -208,12 +208,13 @@ def treeMap[A,B](tree: Tree[A])(f: (A) => B): Tree[B] = {
 }
 
 // Exercise 3.29
-def treeFold[A,B](tree: Tree[A], acc: B, defB: B, defA: A)(f: (B, B, A) => B): B = {
+def treeFold[A,B](tree: Tree[A])(lf: A => B)(bf: (B,B) => B): B = {
     tree match {
-        case Leaf(v) => f(acc, defB, v)
-        case Branch(l,r) => f(treeFold(l, acc, defB, defA)(f), treeFold(r, acc, defB, defA)(f), defA)
+        case Leaf(v) => lf(v)
+        case Branch(l,r) => bf(treeFold(l)(lf)(bf), treeFold(r)(lf)(bf))
     }
 }
 
-def size2[A](tree: Tree[A]): Int = treeFold(tree, 0, 1, 0)((l, r, a) => l + r)
-def max2(tree: Tree[Double]): Double = treeFold[Double,Double](tree, 0, 0, 0)((l, r, a:Double) => l max r max a)
+def size2[A](tree: Tree[A]): Int = treeFold(tree)(_ => 1)(_ + _)
+def max2(tree: Tree[Double]): Double = treeFold(tree)(x => x)(_ max _)
+def depth2[A](tree: Tree[A]): Int = treeFold(tree)(_ => 1)(_ max _ + 1)
