@@ -162,11 +162,11 @@ case class Leaf[A](value: A) extends Tree[A]
 case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
 val t1 = Branch(
             Branch(
-                Leaf(1),
+                Leaf(1.0),
                 Branch(
-                    Leaf(2),
-                    Leaf(3))),
-            Leaf(4))
+                    Leaf(2.0),
+                    Leaf(3.0))),
+            Leaf(4.0))
 
 def stringify[A](tree: Tree[A], indent: String = ""): String = {
     tree match {
@@ -208,11 +208,12 @@ def treeMap[A,B](tree: Tree[A])(f: (A) => B): Tree[B] = {
 }
 
 // Exercise 3.29
-def treeFold[A,B](tree: Tree[A], acc: B)(lf: (B, A) => B, bf: (B,B) => B): B = {
+def treeFold[A,B](tree: Tree[A], acc: B, defB: B, defA: A)(f: (B, B, A) => B): B = {
     tree match {
-        case Leaf(v) => lf(acc, v)
-        case Branch(l,r) => bf(treeFold(l, acc)(lf, bf), treeFold(r, acc)(lf, bf))
+        case Leaf(v) => f(acc, defB, v)
+        case Branch(l,r) => f(treeFold(l, acc, defB, defA)(f), treeFold(r, acc, defB, defA)(f), defA)
     }
 }
 
-def size2[A](tree: Tree[A]): Int = treeFold(tree, 0)((acc,v) => acc + 1, (l, r) => l + r)
+def size2[A](tree: Tree[A]): Int = treeFold(tree, 0, 1, 0)((l, r, a) => l + r)
+def max2(tree: Tree[Double]): Double = treeFold[Double,Double](tree, 0, 0, 0)((l, r, a:Double) => l max r max a)
