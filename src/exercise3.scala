@@ -157,14 +157,62 @@ def hasSubsequence[A](l: Lst[A], sub: Lst[A]): Boolean = {
     }
 }
 
-// Exercise 3.25
 sealed trait Tree[+A]
 case class Leaf[A](value: A) extends Tree[A]
 case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
+val t1 = Branch(
+            Branch(
+                Leaf(1),
+                Branch(
+                    Leaf(2),
+                    Leaf(3))),
+            Leaf(4))
 
+def stringify[A](tree: Tree[A], indent: String = ""): String = {
+    tree match {
+        case Leaf(v) => s"$indent$v\n"
+        case Branch(l,r) => s"$indent+\n" + stringify(l, indent + " ") + stringify(r, indent + " ")
+    }
+}
+
+// Exercise 3.25
 def size[A](tree: Tree[A]): Int = {
     tree match {
-        case Leaf => 1
+        case Leaf(_) => 1
         case Branch(l, r) => size(l) + size(r)
     }
 }
+
+// Exercise 3.26
+def maximum(tree: Tree[Int]): Int = {
+    tree match {
+        case Leaf(v) => v
+        case Branch(l, r) => maximum(l) max maximum(r)
+    }
+}
+
+// Exercise 3.27
+def depth[A](tree: Tree[A]): Int = {
+    tree match {
+        case Leaf(_) => 1
+        case Branch(l, r) => depth(l) max depth(r)
+    }
+}
+
+// Exercise 3.28
+def treeMap[A,B](tree: Tree[A])(f: (A) => B): Tree[B] = {
+    tree match {
+        case Leaf(v) => Leaf(f(v))
+        case Branch(l,r) => Branch(treeMap(l)(f), treeMap(r)(f))
+    }
+}
+
+// Exercise 3.29
+def treeFold[A,B](tree: Tree[A])(lf: (A) => B, bf: (Tree[A],Tree[A]) => B): B = {
+    tree match {
+        case Leaf(v) => lf(v)
+        case Branch(l,r) => bf(l,r)
+    }
+}
+
+//def size2[A](tree: Tree[A]): Int = treeFold(tree)((_) => 1, )
