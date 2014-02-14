@@ -54,4 +54,20 @@ def variance(xs: Seq[Double]): Option[Double] = {
 // Exercise 4.3
 def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
     a.flatMap(aa => b.map(bb => f(aa, bb)))
+
+// Exercise 4.4
+def mkMatcher(pat: String): Option[String => Boolean] = ???
+
+def bothMatch(pat1: String, pat2: String, s: String): Option[Boolean] = ???
+    //map2(mkMatcher(pat1), mkMatcher(pat2))((m1, m2) => m1(s) && m2(s))
+
+// Exercise 4.5
+def sequence[A](as: List[Option[A]]): Option[List[A]] = {
+    def f[A](xs: Option[List[A]], x: Option[A]): Option[List[A]] = map2(xs, x)((ys, y) => ys :+ y)
+    as.foldLeft(f _, Some(List()))
+}
+
+
+
+
 }
