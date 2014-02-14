@@ -52,10 +52,6 @@ def variance(xs: Seq[Double]): Option[Double] = {
 }
 
 // Exercise 4.3
-def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = {
-    val bf = (aa: A) => b.map(bb => f(aa, bb))
-    a.map(bf _)
-    //a.map(aa => b.map(bb => f(aa, bb)))
-    //a.map((aa: A) => b.map((bb: B) => f(aa, bb)))
-}
+def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
+    a.flatMap(aa => b.map(bb => f(aa, bb)))
 }
