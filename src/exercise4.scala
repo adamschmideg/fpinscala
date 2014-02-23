@@ -68,8 +68,8 @@ def f[A](xs: Option[List[A]], x: Option[A]): Option[List[A]] = map2(xs, x)(appen
 
 def sequence[A](as: List[Option[A]]): Option[List[A]] = {
     as.foldLeft[Option[List[A]]](
-        Some(List[A]())) (f _)
-        //((xs: Option[List[A]], x: Option[A]) => map2(xs, x)(appendItem _))
+        Some(List[A]()))  /* break line here to cause an error */((xs: Option[List[A]], x: Option[A]) => map2(xs, x)(appendItem _))
+    //(f _)
 }
 
 
