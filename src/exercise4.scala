@@ -62,9 +62,14 @@ def bothMatch(pat1: String, pat2: String, s: String): Option[Boolean] = ???
     //map2(mkMatcher(pat1), mkMatcher(pat2))((m1, m2) => m1(s) && m2(s))
 
 // Exercise 4.5
+def appendItem[A](xs: List[A], item: A): List[A] = xs :+ item
+
+def f[A](xs: Option[List[A]], x: Option[A]): Option[List[A]] = map2(xs, x)(appendItem _)
+
 def sequence[A](as: List[Option[A]]): Option[List[A]] = {
-    def f[A](xs: Option[List[A]], x: Option[A]): Option[List[A]] = map2(xs, x)((ys, y) => ys :+ y)
-    as.foldLeft(f _, Some(List()))
+    as.foldLeft[Option[List[A]]](
+        Some(List[A]())) (f _)
+        //((xs: Option[List[A]], x: Option[A]) => map2(xs, x)(appendItem _))
 }
 
 
